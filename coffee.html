@@ -49,16 +49,73 @@
     "use strict";
 
     var myImage = $("img#coffee_image");
+    var myRevenueMessage = $("#revenue");
 
     myImage.attr('src', 'static/coffee_beans.jpg');
 
-    myImage.on("click", makeCoffee);
+    var drinksOrdered = [];
+    var mug, beans;
 
-    function makeCoffee() {
-         myImage.attr('src', 'static/coffee_machine.jpg');
-         setTimeout(function() { myImage.attr('src', 'static/coffee_mug.jpg'); }, 1500);
-         setTimeout(function() { myImage.attr('src', 'static/coffee_beans.jpg'); }, 4000);
-    }
+    var makeCoffee = function (drinkType) {
+        drinksOrdered.push(drinkType);
+        clearTimeout(mug);
+        clearTimeout(beans);
+
+        myImage.attr('src', 'static/coffee_machine.jpg');
+
+        mug = setTimeout(function() { 
+            myImage.attr('src', 'static/coffee_mug.jpg');
+            }, 1500);
+
+        beans = setTimeout(function() { 
+            myImage.attr('src', 'static/coffee_beans.jpg'); }, 4000);
+
+        myRevenueMessage.html("$" + revenue(drinksOrdered).toFixed(2));
+    };
+
+    myImage.on('click', function () {
+        return makeCoffee("brew");
+        });
+
+    var espresso = $("#espresso");
+    var latte = $("#latte");
+    var hotChocolate = $("#hot-chocolate");
+
+    espresso.on('click', function () {
+        return makeCoffee("espresso");
+        });
+
+    latte.on('click', function () {
+        return makeCoffee("latte");
+        });
+
+    hotChocolate.on('click', function () {
+        return makeCoffee("hot-chocolate");
+        });
+
+
+    // use this JavaScript object in further study step
+
+    var prices = {
+        "brew": 2.05,
+        "espresso": 3.25,
+        "latte": 4.15,
+        "hot chocolate": 2.50
+    };
+
+    var revenue = function () {
+        var daily_total = 0;
+
+        for (var drink of drinksOrdered) {
+            if (drink == "hot-chocolate") {
+                drink = "hot chocolate";
+            };
+            daily_total += prices[drink];
+        };
+
+        return daily_total;
+    };
+
 
 </script>
 
